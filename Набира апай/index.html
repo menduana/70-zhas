@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мерейтойға шақыру</title>
+    <style>
+        /* Общие стили для фона страницы */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9f6; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #333;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Основной контейнер (адаптирован под мобильные) */
+        .wrapper {
+            width: 100%;
+            max-width: 450px;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .invitation-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Контейнер для второй картинки, который позволяет накладывать элементы внутрь */
+        .image-relative-container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* === КНОПКА 2ГИС === */
+        .btn-2gis {
+            position: absolute;
+            top: 40%; /* Сразу после текста Habibi */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 55%;
+            
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            background-color: #fbfff8; /* Фирменный зеленый 2ГИС */
+            color:#6a256c;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(36, 180, 126, 0.4);
+            transition: transform 0.2s, background-color 0.2s;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .btn-2gis:active {
+            transform: translateX(-50%) scale(0.98);
+            background-color: #1e9669;
+        }
+
+        /* === ФОРМА ОБРАТНОЙ СВЯЗИ ВНУТРИ КАРТИНКИ === */
+        .rsvp-form {
+            position: absolute;
+            top: 68%; /* Размещение в пустой белой рамке под фиолетовым текстом */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 65%;
+            text-align: left;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #6a256c;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #6a256c; /* Изумрудный цвет под стиль рамки */
+            border-radius: 10px;
+            font-size: 15px;
+            color: #6a256c;
+            background-color: rgba(255, 255, 255, 0.9); /* Слегка прозрачный белый */
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #6a256c; /* Фиолетовый фокус */
+            box-shadow: 0 0 5px rgba(93, 46, 122, 0.2);
+        }
+
+        /* Стили переключателей (радио-кнопок) */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            cursor: pointer;
+            color: #6a256c;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 6px 10px;
+            border-radius: 8px;
+        }
+
+        .radio-label input {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            accent-color: #5d2e7a;
+        }
+
+        /* Кнопка отправки формы */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: #5d2e7a; /* Фиолетовый цвет в тон текста */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(93, 46, 122, 0.3);
+            transition: background-color 0.2s, transform 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+            background-color: #46225c;
+        }
+/* === КНОПКА МУЗЫКИ === */
+.music-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #4a9679;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 999;
+}
+.music-toggle.playing {
+    animation: rotateMusic 4s linear infinite;
+}
+@keyframes rotateMusic {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+.music-toggle svg {
+    width: 22px;
+    height: 22px;
+    fill:#5eac84;
+}
+    </style>
+</head>
+<body>
+<audio id="bgMusic" src="music.mp3" loop></audio>
+
+<div class="music-toggle" id="musicBtn" onclick="toggleMusic()">
+    <svg viewBox="0 0 24 24">
+        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+    </svg>
+</div>
+    <div class="wrapper">
+        
+        <img src="1.png" alt="Шақыру билеті 1" class="invitation-img">
+        
+        <div class="image-relative-container">
+            <img src="2.png" alt="Шақыру билеті 2" class="invitation-img">
+            
+            <a href="https://2gis.kz/uralsk/geo/70000001103206817/51.381060,51.223301" target="_blank" class="btn-2gis">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
+                    <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" fill="currentColor"/>
+                </svg>
+                2ГИС картадан көру
+            </a>
+
+            <form class="rsvp-form" id="rsvpForm">
+                <div class="form-group">
+                   
+                    <input type="text" id="guestName" class="form-control" placeholder="Мысалы: Арман" required>
+                </div>
+
+                <div class="form-group">
+                    
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="attendance" value="Иә, жалғыз келемін" checked>
+                            Иә, міндетті түрде барамын
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="attendance" value="Жұбайыммен келемін">
+                            Жұбайыммен келемін
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="attendance" value="Өкінішке орай, келе алмаймын">
+                            Өкінішке орай, келе алмаймын
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Жіберу</button>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('rsvpForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('guestName').value;
+            const attendance = document.querySelector('input[name="attendance"]:checked').value;
+            
+            // === НАСТРОЙКА ТЕЛЕГРАМ БОТА ===
+            const telegramBotToken = '7559960148:AAGYIz_lgoJlBUI3rYY_ViaMJTgDo3CN0ec'; 
+            const telegramChatId = '780862955'; 
+            
+            const message = `🔔 *Тойға жаңа жауап!*\n\n👤 *Қонақ:* ${name}\n❓ *Жауап:* ${attendance}`;
+            const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+            
+            const submitBtn = this.querySelector('.btn-submit');
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Жіберілуде...';
+
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: telegramChatId,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Рахмет, ' + name + '! Сіздің жауабыңыз сәтті жіберілді.');
+                    this.reset();
+                } else {
+                    alert('Қате туындады. Қайтадан байқап көріңіз.');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Желіде қателік болды. Интернетті тексеріңіз.');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Жіберу';
+            });
+        });
+// === ЛОГИКА МУЗЫКАЛЬНОГО ПЛЕЕРА ===
+const music = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+
+function toggleMusic() {
+    if (music.paused) {
+        music.play();
+        musicBtn.classList.add('playing');
+    } else {
+        music.pause();
+        musicBtn.classList.remove('playing');
+    }
+}
+    </script>
+</body>
+</html>
